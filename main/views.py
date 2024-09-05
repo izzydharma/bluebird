@@ -8,5 +8,9 @@ def product_detail(request):
         'rating': 4.5,
         'date': '2024-09-06'
     }
-    return render(request, 'main/product.html', context)
+    return render(request, 'main.html', context)
+
+# This is the index view that renders the 'main.html' template
+def index(request):
+    return render(request, 'main.html')  # Adjust the template name to 'main.html'
 
