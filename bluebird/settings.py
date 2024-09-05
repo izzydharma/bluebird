@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-a0v%xj=jsuyau=^f_k41(8jr52#i4&s85f%1v79=&%%%%n(e9l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "<Your PWS deployment URL>"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "https://pbp.cs.ui.ac.id/made.izzy/bluebird", "made-izzy-bluebird.pbp.cs.ui.ac.id"]
 
 # Application definition
 
