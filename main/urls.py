@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Root URL points to index view
+    path('product/', views.product_detail, name='product_detail'),  # New URL for product details
 ]
