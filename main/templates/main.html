@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Shop Product</title>
+    <title>E-Shop Products</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,13 +32,15 @@
 </head>
 <body>
 
-    <div class="product">
-        <h2>{{ name }}</h2>
-        <p><strong>Price:</strong> ${{ price }}</p>
-        <p><strong>Description:</strong> {{ description }}</p>
-        <p class="rating"><strong>Rating:</strong> {{ rating }} / 5</p>
-        <p class="date"><strong>Date Added:</strong> {{ date }}</p>
-    </div>
+    {% for product in products %}
+        <div class="product">
+            <h2>{{ product.name }}</h2>
+            <p><strong>Price:</strong> ${{ product.price }}</p>
+            <p><strong>Description:</strong> {{ product.description }}</p>
+            <p class="rating"><strong>Rating:</strong> {{ product.rating }} / 5</p>
+            <p class="date"><strong>Date Added:</strong> {{ product.date }}</p>
+        </div>
+    {% endfor %}
 
 </body>
 </html>

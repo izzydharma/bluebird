@@ -1,16 +1,29 @@
 from django.shortcuts import render
 
-def product_detail(request):
+def show_main(request):
     context = {
-        'name': 'Example Product',
-        'price': 99,
-        'description': 'This is a great product that you will love!',
-        'rating': 4.5,
-        'date': '2024-09-06'
+        'products': [
+            {
+                'name': 'Example Product 1',
+                'price': 99,
+                'description': 'This is a great product that you will love!',
+                'rating': 4.5,
+                'date': '2024-09-06'
+            },
+            {
+                'name': 'Example Product 2',
+                'price': 79,
+                'description': 'This product is affordable and high quality!',
+                'rating': 4.2,
+                'date': '2024-09-05'
+            },
+            {
+                'name': 'Example Product 3',
+                'price': 149,
+                'description': 'Premium product with excellent features!',
+                'rating': 4.8,
+                'date': '2024-09-04'
+            }
+        ]
     }
     return render(request, 'main.html', context)
-
-# This is the index view that renders the 'main.html' template
-def index(request):
-    return render(request, 'main.html')  # Adjust the template name to 'main.html'
-
