@@ -4,23 +4,23 @@ def show_main(request):
     context = {
         'products': [
             {
-                'name': 'Example Product 1',
-                'price': 99,
-                'description': 'This is a great product that you will love!',
+                'name': 'USB C charger',
+                'price': 5,
+                'description': 'Charger with braided cable',
                 'rating': 4.5,
                 'date': '2024-09-06'
             },
             {
-                'name': 'Example Product 2',
+                'name': 'Laptop',
                 'price': 79,
-                'description': 'This product is affordable and high quality!',
+                'description': 'Great laptop for everyday use',
                 'rating': 4.2,
                 'date': '2024-09-05'
             },
             {
-                'name': 'Example Product 3',
-                'price': 149,
-                'description': 'Premium product with excellent features!',
+                'name': 'Computer',
+                'price': 300,
+                'description': 'Great computer for gaming',
                 'rating': 4.8,
                 'date': '2024-09-04'
             }
