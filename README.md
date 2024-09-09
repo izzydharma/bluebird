@@ -103,7 +103,8 @@ this code will pass the data from the context dictionary and it will sent to the
 
 ### 6. Create routing for the about view:
 
-In urls.py of the main app
+In urls.py of the main app, writhe this code
+this code 
 
 ```
 from django.urls import path
@@ -144,7 +145,10 @@ Run the project command instruction that is in the PWS project page.
 
 ## 2. The Diagram
 
-Client -> Request -> urls.py -> views.py -> models.py -> HTML template -> Response -> Client
+![](static/images/diagram.png)
+
+When a user makes a request, the urls.py file routes the request to a view in the views.py file, which processes the request and interacts with models.py for data. The view then uses the main.html template to format the response, which is sent back to the user's browser.
+
 
 ## 3. Use of Git
 Git is used for version control, allowing developers to track changes, collaborate with others, and manage code history. It supports branching, which helps in working on new features without affecting the main codebase, and merging for integrating those features.
