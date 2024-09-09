@@ -91,7 +91,7 @@ In views.py, define a function
 from django.shortcuts import render
 def show_main(request):
     context = {
-        'app_name': 'main', 
+        'app_name': 'bluebird', 
         'your_name': 'Made Izzy Prema Dharma',  
         'your_class': 'KKI'  
     }
@@ -147,11 +147,11 @@ Run the project command instruction that is in the PWS project page.
 
 ![](image/diagram.png)
 
-When a user makes a request, the urls.py file routes the request to a view in the views.py file, which processes the request and interacts with models.py for data. The view then uses the main.html template to format the response, which is sent back to the user's browser.
+When a user makes a request, the ```urls.py``` file routes the request to a view in the ```views.py``` file, which processes the request and interacts with ```models.py``` for data. The view then uses the ```main.html``` template to format the response, which is sent back to the user's browser.
 
 
 ## 3. Use of Git
-Git is used for version control, allowing developers to track changes, collaborate with others, and manage code history. It supports branching, which helps in working on new features without affecting the main codebase, and merging for integrating those features.
+```Git``` is used for version control, allowing developers to track changes, collaborate with others, and manage code history. It supports branching, which helps in working on new features without affecting the main codebase, and merging for integrating those features.
 
 ## 4. Reason to use Django
 Django is beginner-friendly, providing clear structure and built-in features like the ORM and admin panel. Its philosophy of "batteries included" allows students to quickly grasp how web development works with less setup, while still being flexible enough to handle complex projects.Why is the Django model called an ORM?
