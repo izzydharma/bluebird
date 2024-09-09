@@ -84,7 +84,7 @@ and a paragraph with your class in it
 
 the part with {} in it will be requested to views.py
 
-### 5. Create a view to display your name and class:
+### 6. Create a view to display your name and class:
 In views.py, define a function
 
 ```
@@ -101,7 +101,7 @@ def show_main(request):
 so this code snippet above is used to handle an HTTP request and returns the appropriate view
 this code will pass the data from the context dictionary and it will sent to the view
 
-### 6. Create routing for the about view:
+### 7. Create routing for the about view:
 
 In urls.py of the main app, writhe this code
 this code 
@@ -117,7 +117,7 @@ urlpatterns = [
 ]
 ```
 
-### 7. Configuring the project URL Routing
+### 8. Configuring the project URL Routing
 
 Open the urls.py inisde your project directory
 Add the following URL route to direct to the main view within the urlpatterns variable.
@@ -130,11 +130,11 @@ Add the following URL route to direct to the main view within the urlpatterns va
 
 ### 9. Deplyoing to PWS
 
-Access the PWS page at https://pbp.cs.ui.ac.id.
+Access the PWS page at ```https://pbp.cs.ui.ac.id```
 Login into your account
 Create a new project
 Store your credentials for the project somewhere safe
-On you settings.py in the project directory, add the PWS deployment URL to the allowed host
+On you ```settings.py``` in the project directory, add the PWS deployment URL to the allowed host
 ```
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "<Your PWS deployment URL>"]
