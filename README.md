@@ -145,7 +145,7 @@ Run the project command instruction that is in the PWS project page.
 
 ## 2. The Diagram
 
-![](static/images/diagram.png)
+![](images/diagram.png)
 
 When a user makes a request, the urls.py file routes the request to a view in the views.py file, which processes the request and interacts with models.py for data. The view then uses the main.html template to format the response, which is sent back to the user's browser.
 
