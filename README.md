@@ -13,7 +13,9 @@ This adds files like views.py, models.py, and urls.py for handling the logic of 
 3. Perform routing for the "main" app:
 
 In the project’s urls.py, include the routing for the main application by adding
-'''from django.urls import path, include
+
+'''
+from django.urls import path, include
 urlpatterns = [
     path('', include('main.urls')),
 ]'''
