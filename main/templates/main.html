@@ -3,44 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Shop Products</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .product {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            max-width: 600px;
-        }
-        .product h2 {
-            margin-top: 0;
-        }
-        .product p {
-            margin: 5px 0;
-        }
-        .product .rating {
-            color: #f39c12;
-        }
-        .product .date {
-            font-size: 0.9em;
-            color: #888;
-        }
-    </style>
+    <title>Application Info</title>
 </head>
 <body>
-
-    {% for product in products %}
-        <div class="product">
-            <h2>{{ product.name }}</h2>
-            <p><strong>Price:</strong> ${{ product.price }}</p>
-            <p><strong>Description:</strong> {{ product.description }}</p>
-            <p><strong>Rating:</strong> {{ product.rating }} / 5</p>
-            <p><strong>Date Added:</strong> {{ product.date }}</p>
-        </div>
-    {% endfor %}
-
+    <h1>{{ app_name }}</h1>
+    <p>Name: {{ your_name }}</p>
+    <p>Class: {{ your_class }}</p>
 </body>
 </html>
