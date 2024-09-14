@@ -1,46 +1,37 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- You can add meta tags here -->
-  </head>
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ app_name }}</h1>
+<p>Name: {{ your_name }}</p>
+<p>Class: {{ your_class }}</p>
+{% if not product_entries %}
+<p>There are no product entry yet.</p>
+{% else %}
+<table>
+  <tr>
+    <th>Product Name</th>
+    <th>Date</th>
+    <th>Price</th>
+    <th>Desicription</th>
+    <th>Rating</th>
+  </tr>
 
-  <body>
-    <h1>{{ app_name }}</h1>
-    <p>Name: {{ your_name }}</p>
-    <p>Class: {{ your_class }}</p>
+  {% comment %} This is how to display product data
+  {% endcomment %} 
+  {% for product_entry in product_entries %}
+  <tr>
+    <td>{{product_entry.name}}</td>
+    <td>{{product_entry.date}}</td>
+    <td>{{product_entry.price}}</td>
+    <td>{{product_entry.description}}</td>
+    <td>{{product_entry.rating}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
 
-    {% if not product_entries %}
-    <p>There are no product entry yet.</p>
-    {% else %}
-    <table>
-      <tr>
-        <th>Product Name</th>
-        <th>Date</th>
-        <th>Price</th>
-        <th>Description</th>
-        <th>Rating</th>
-      </tr>
+<br />
 
-      {% comment %} This is how to display product data {% endcomment %}
-      {% for product_entry in product_entries %}
-      <tr>
-        <td>{{ product_entry.name }}</td>
-        <td>{{ product_entry.date }}</td>
-        <td>{{ product_entry.price }}</td>
-        <td>{{ product_entry.description }}</td>
-        <td>{{ product_entry.rating }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
-
-    <br />
-
-    <a href="{% url 'main:create_product_entry' %}">
-      <button>Add New Product Entry</button>
-    </a>
-  </body>
-</html>
+<a href="{% url 'main:create_product_entry' %}">
+  <button>Add New Product Entry</button>
+</a>
+{% endblock content %}
