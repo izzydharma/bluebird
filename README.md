@@ -404,7 +404,23 @@ The `csrf_token` is used to protect forms in Django from Cross-Site Request Forg
 
 If we did not use `csrf_token`, an attacker could exploit this vulnerability by crafting malicious links or forms that mimic legitimate requests. For example, they could send a forged form submission to transfer money or change user settings without the user's knowledge. By adding a `csrf_token`, Django ensures that form submissions are coming from a legitimate source.
 
+### Screenshot from postman
 
+1. **JSON**
+
+![](image/json.png)
+
+2. **XML**
+   
+![](image/xml.png)
+
+3. **JSON by ID**
+   
+![](image/jsonid.png)
+
+4. **XML by ID**
+
+ ![](image/xmlid.png)
 
 
 
