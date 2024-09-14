@@ -232,6 +232,24 @@ urlpatterns = [
     ...
 ```
 
+In the root directory, make a new directory called templates. In there, make a new file called base.html with the following codes in it
+
+```
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+  </head>
+
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+```
+
 Create a new HTML file with the name create_product_entry.html in the main/templates directory. Fill it with the following code :
 
 ```
@@ -255,55 +273,57 @@ Create a new HTML file with the name create_product_entry.html in the main/templ
 {% endblock %}
 ```
 
-Last step, open ```main.html``` in the ```main/templates``` directory. in there edit the ```main.html``` file as follows :
+Then, open ```main.html``` in the ```main/templates``` directory. in there edit the ```main.html``` file as follows :
 
 ```
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- You can add meta tags here -->
-  </head>
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ app_name }}</h1>
+<p>Name: {{ your_name }}</p>
+<p>Class: {{ your_class }}</p>
+{% if not product_entries %}
+<p>There are no product entry yet.</p>
+{% else %}
+<table>
+  <tr>
+    <th>Product Name</th>
+    <th>Date</th>
+    <th>Price</th>
+    <th>Desicription</th>
+    <th>Rating</th>
+  </tr>
 
-  <body>
-    <h1>{{ app_name }}</h1>
-    <p>Name: {{ your_name }}</p>
-    <p>Class: {{ your_class }}</p>
+  {% comment %} This is how to display product data
+  {% endcomment %} 
+  {% for product_entry in product_entries %}
+  <tr>
+    <td>{{product_entry.name}}</td>
+    <td>{{product_entry.date}}</td>
+    <td>{{product_entry.price}}</td>
+    <td>{{product_entry.description}}</td>
+    <td>{{product_entry.rating}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
 
-    {% if not product_entries %}
-    <p>There are no product entry yet.</p>
-    {% else %}
-    <table>
-      <tr>
-        <th>Product Name</th>
-        <th>Date</th>
-        <th>Price</th>
-        <th>Description</th>
-        <th>Rating</th>
-      </tr>
+<br />
 
-      {% comment %} This is how to display product data {% endcomment %}
-      {% for product_entry in product_entries %}
-      <tr>
-        <td>{{ product_entry.name }}</td>
-        <td>{{ product_entry.date }}</td>
-        <td>{{ product_entry.price }}</td>
-        <td>{{ product_entry.description }}</td>
-        <td>{{ product_entry.rating }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
+<a href="{% url 'main:create_product_entry' %}">
+  <button>Add New Product Entry</button>
+</a>
+{% endblock content %}
+```
+Lastly, open ```settings.py``` on your project directory, and add this to the template variable
 
-    <br />
-
-    <a href="{% url 'main:create_product_entry' %}">
-      <button>Add New Product Entry</button>
-    </a>
-  </body>
-</html>
+```
+...
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'], # add this
+        'APP_DIRS': True,
+...
 ```
 
 ### 2.Add 4 views to view the added objects in XML, JSON, XML by ID, and JSON by ID formats.
