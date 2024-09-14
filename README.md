@@ -1,4 +1,5 @@
 # BLUEBIRD
+# ASSIGNMENT 2
 ## Link : made-izzy-bluebird.pbp.cs.ui.ac.id
 ## 1. Step-by-Step Implementation:
 ### 1. Create a new Django project:
@@ -158,3 +159,11 @@ Django is beginner-friendly, providing clear structure and built-in features lik
 
 ## 5. What is ORM?
 ORM (Object-Relational Mapping) translates database queries into Python code, allowing developers to interact with the database using Python objects. Django’s ORM simplifies the management of database operations, ensuring database-agnostic code.
+
+# ASSIGNMENT 3
+## 1. Step-by-Step Implementation:
+
+### Create The Form Input
+1. Create a file name ```forms.py``` in the project 
+
+
