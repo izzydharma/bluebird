@@ -443,6 +443,350 @@ If we did not use `csrf_token`, an attacker could exploit this vulnerability by 
  ![](image/xmlid.png)
 
 
+# ASSIGNMENT 4
+
+## 1. Step-by-Step Implementation:
+### Implementing register function
+In ```view.py``` in the ```main``` subdirectory import these library
+```
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+```
+Then, add the register function to the ```views.py```
+```
+def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+```
+Create a new HTML file named ```register.html``` in the ```main/templates``` directory
+
+```
+{% extends 'base.html' %} {% block meta %}
+<title>Register</title>
+{% endblock meta %} {% block content %}
+
+<div class="login">
+  <h1>Register</h1>
+
+  <form method="POST">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+      <tr>
+        <td></td>
+        <td><input type="submit" name="submit" value="Register" /></td>
+      </tr>
+    </table>
+  </form>
+
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+{% endblock content %}
+```
+Open ```urls.py``` in the ```main``` directory and import the register function
+
+```from main.views import register```
+
+add the url path to ```urlpatterns``` to access the imported function.
+
+```
+ urlpatterns = [
+     ...
+     path('register/', register, name='register'),
+ ]
+```
+
+### Implementing login function
+
+Open ```view.py``` in the ```main``` directory and add these import functions
+
+```
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate, login
+```
+
+Add the following ```login_user``` function to ```views.py``` 
+
+```
+def login_user(request):
+   if request.method == 'POST':
+      form = AuthenticationForm(data=request.POST)
+
+      if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('main:show_main')
+
+   else:
+      form = AuthenticationForm(request)
+   context = {'form': form}
+   return render(request, 'login.html', context)
+```
+
+Create a new HTML name ```login.html``` in the ```main/templates``` directory
+
+```
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Login</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="login">
+  <h1>Login</h1>
+
+  <form method="POST" action="">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+      <tr>
+        <td></td>
+        <td><input class="btn login_btn" type="submit" value="Login" /></td>
+      </tr>
+    </table>
+  </form>
+
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} Don't have an account yet?
+  <a href="{% url 'main:register' %}">Register Now</a>
+</div>
+
+{% endblock content %}
+```
+
+Open ```urls.py``` in the ```main``` directory and import the login function
+
+```from main.views import login_user```
+
+Add the URL path to ```urlpatterns``` to access the function
+
+```
+urlpatterns = [
+   ...
+   path('login/', login_user, name='login'),
+]
+```
+
+### Implementing logout function
+
+Open ```views.py``` and add the ```logout``` import
+
+
+```from django.contrib.auth import logout```
+
+
+Add the ```logout_user``` to ```views.py```
+
+```
+def logout_user(request):
+    logout(request)
+    return redirect('main:login')
+```
+
+Open ```main.html``` file in the ```main/templates``` directory and add the following code snippet after the hyperlink tag for "Add New Mood Entry."
+
+```
+...
+<a href="{% url 'main:logout' %}">
+  <button>Logout</button>
+</a>
+...
+```
+
+Open ```urls.py``` and import the ```logout_user``` function
+
+
+```from main.views import logout_user```
+
+Add the URL path to ```urlpatterns``` to access the function you imported earlier.
+
+```
+urlpatterns = [
+   ...
+   path('logout/', logout_user, name='logout'),
+]
+```
+
+### Restricting Access to the Main Page
+
+Open ```views.py``` in the main subdirectory and add ```the login_required``` import.
+
+```from django.contrib.auth.decorators import login_required```
+
+Add the code snippet ```@login_required(login_url='/login')``` above the ```show_main``` function so that the main page can only be accessed by authenticated (logged-in) users.
+
+```
+...
+@login_required(login_url='/login')
+def show_main(request):
+...
+```
+
+### Display logged in user details such as username and apply cookies like last login to the application's main page.
+
+Open ```views.py``` in the ```main``` directory and add these imports
+
+```
+import datetime
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+```
+
+In the ```login_user``` function, we will add the functionality to set a cookie named ```last_login```. Replace the code in the ```if form.is_valid()``` block with the following code
+
+```
+...
+if form.is_valid():
+    user = form.get_user()
+    login(request, user)
+    response = HttpResponseRedirect(reverse("main:show_main"))
+    response.set_cookie('last_login', str(datetime.datetime.now()))
+    return response
+...
+```
+
+In the ```show_main``` function, add the snippet ```'last_login': request.COOKIES['last_login'],``` in the context variable
+
+```
+context = {
+    'name': 'Pak Bepe',
+    'class': 'PBP D',
+    'npm': '2306123456',
+    'mood_entries': mood_entries,
+    'last_login': request.COOKIES['last_login'],
+}
+```
+
+Change the ```logout_user``` function to be like this
+
+```
+def logout_user(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+    return response
+```
+
+Open the ```main.html``` and add this code after the logout button
+
+```
+...
+<h5>Last login session: {{ last_login }}</h5>
+...
+```
+
+### Connect the models Product and User
+
+Open ```models.py``` in the main subdirectory and add the following code below the line that imports the model:
+
+```
+...
+from django.contrib.auth.models import User
+...
+```
+
+In the previously created ```Product``` model, add the following code:
+
+```
+class Product(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    ...
+```
+
+Reopen ```views.py``` in the main subdirectory and modify the code in the ```create_product_entry``` function as follows:
+
+```
+def create_product_entry(request):
+    form = ProductEntryForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        mood_entry = form.save(commit=False)
+        mood_entry.user = request.user
+        mood_entry.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_product_entry.html", context)
+ ...
+```
+
+Change the value of ```product_entries``` and ```context``` in the function ```show_main``` as follows.
+
+```
+def show_main(request):
+    product_entries = Product.objects.filter(user=request.user)
+
+    context = {
+        ...
+        'your_name': request.user.username,
+        ...
+    }
+...
+```
+
+Save all changes and run the model migration with python ```manage.py makemigrations```.
+
+If you encounter any errors during the model migration. Just need to select ```1```.
+
+Run ```python manage.py migrate``` to apply the migration made in the previous step.
+
+Lastly, open ```settings.py``` in the ```bluebird``` directory and add this impor
+
+```
+import os
+```
+
+Then, change the variable ```DEBUG``` in ```settings.py``` into this.
+
+```
+PRODUCTION = os.getenv("PRODUCTION", False)
+DEBUG = not PRODUCTION
+```
+
+## Difference between HttpResponseRedirect() and redirect()
+
+* ```HttpResponseRedirect()``` is a class-based response that specifically handles HTTP redirection by returning a status code (302) and a new URL. It requires an explicit URL to be passed as an argument.
+* ```redirect()``` is a shortcut function that internally calls ```HttpResponseRedirect()``` and simplifies the redirection process by accepting a URL, a view name, or an object. It automatically resolves the URL if a view name or object is provided.
+
+## How the Product model is linked with User
+
+In the ```Product``` model, we establish a relationship with Django’s built-in ```User```model by adding a ```ForeignKey``` field that links each product entry to a specific user. This is done by importing the ```User``` model from ```django.contrib.auth.models``` and adding ```user = models.ForeignKey(User, on_delete=models.CASCADE)``` to the ```Product``` model. The ForeignKey ensures that each product entry is associated with a user, and if the user is deleted, their associated product entries are also removed from the database. Additionally, when creating a new product entry in the ```views.py``` file, we use ```commit=False``` to delay saving the form so that we can assign the ```user``` field to the currently logged-in user (```request.user```). This way, each product entry is saved with a reference to the user who created it. When displaying product entries on the main page, we filter them by the logged-in user, ensuring that users only see their own entries.
+
+## Difference Between Authentication and Authorization
+
+* Authentication is the process of verifying the identity of a user (e.g., checking their username and password).
+* Authorization determines what actions or resources the authenticated user has permission to access.
+
+When a user logs in, Django verifies their credentials (authentication) and then associates the user with specific permissions and roles (authorization) to control access.
+
+Django handles authentication through its built-in ```django.contrib.auth system```, which includes tools for user login, logout, password management, and more.
+
+## How Django Remembers Logged-In Users
+
+Django uses session cookies to remember logged-in users. When a user successfully logs in, Django creates a session for that user and sets a cookie in their browser. This cookie stores the session ID, which Django uses to identify the user in subsequent requests.
+
+
 
 
 
