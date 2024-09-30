@@ -10,8 +10,6 @@ from django.contrib.auth.decorators import login_required
 import datetime
 from django.urls import reverse
 
-def about(request):
-    return render(request, 'about.html')
 
 def delete_product(request, id):
     # Get mood based on id
