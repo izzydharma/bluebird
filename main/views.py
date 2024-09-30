@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect   # Add import redirect at this line
+from django.shortcuts import render, redirect, reverse
 from main.forms import ProductEntryForm
 from main.models import Product
 from django.http import HttpResponse, HttpResponseRedirect
@@ -9,6 +9,32 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.urls import reverse
+
+def about(request):
+    return render(request, 'about.html')
+
+def delete_product(request, id):
+    # Get mood based on id
+    product = Product.objects.get(pk = id)
+    # Delete mood
+    product.delete()
+    # Return to home page
+    return HttpResponseRedirect(reverse('main:show_main'))
+
+def edit_product(request, id):
+    # Get mood entry based on id
+    product = Product.objects.get(pk = id)
+
+    # Set mood entry as an instance of the form
+    form = ProductEntryForm(request.POST or None, instance=product)
+
+    if form.is_valid() and request.method == "POST":
+        # Save form and return to home page
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
 
 def logout_user(request):
     logout(request)
@@ -70,8 +96,9 @@ def show_main(request):
 
     context = {
         'app_name': 'bluebird', 
-        'your_name': request.user.username,  
-        'your_class': 'KKI',
+        'name': request.user.username,  
+        'class': 'KKI',
+        'npm': '2306256425',
         'product_entries' : product_entries,
         'last_login': request.COOKIES['last_login'],
 
