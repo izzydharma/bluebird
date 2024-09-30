@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block meta %}
 <title>Login</title>
 {% endblock meta %}
@@ -7,8 +7,10 @@
 {% block content %}
 <div class="min-h-screen flex items-center justify-center w-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full space-y-8">
-    <div>
-      <h2 class="mt-6 text-center text-black text-3xl font-extrabold text-gray-900">
+    <div class="text-center">
+      <!-- Placeholder for logo -->
+      <img src="{% static 'image/bird.png' %}" alt="Logo" class="mx-auto h-20 md:h-32 lg:h-40 w-auto">
+      <h2 class="mt-6 text-black text-3xl font-extrabold text-gray-900">
         Login to your account
       </h2>
     </div>
