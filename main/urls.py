@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views import show_main, create_product_entry, show_xml, show_json, show_xml_by_id, show_json_by_id, register, login_user,logout_user, edit_product, delete_product,
+from main.views import show_main, create_product_entry, show_xml, show_json, show_xml_by_id, show_json_by_id, register, login_user,logout_user, edit_product, delete_product
 
 app_name = 'main'
 
