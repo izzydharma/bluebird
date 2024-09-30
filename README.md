@@ -1349,7 +1349,56 @@ Add a new file name ```edit_product.html``` in the ```main/templates``` director
 {% endblock %}
 ```
 
+## Priority Order of CSS Selectors
 
+When there are multiple CSS selectors for an HTML element, the priority (specificity) of the selectors determines which one is applied. The order of priority from highest to lowest is:
 
+* Inline styles (directly in the HTML element) have the highest priority (e.g., ```<div style="color: red;">```).
+* ID selectors (e.g., ```#header```) are more specific than class selectors.
+* Class selectors (e.g., ```.navbar```), pseudo-classes, and attribute selectors.
+* Type selectors (e.g., ```div, h1```) and pseudo-elements have the lowest specificity.
+* Universal selector (```*```), combinators (e.g., ```>``` or ```+```), and negation pseudo-class (```:not```) have the least specificity.
+
+If two selectors have the same specificity, the last one in the CSS is applied (this is known as the "cascading" part of CSS).
+
+## Importance of Responsive Design in Web Development
+
+Responsive design ensures that web applications function well on different screen sizes and devices (e.g., mobile, tablet, desktop). It's important because:
+
+* User Experience (UX): A responsive design adapts to the user's screen, providing a better and more accessible experience.
+* SEO Benefits: Search engines like Google prioritize mobile-friendly websites, impacting search rankings.
+* Cost-Efficiency: A single responsive design works across all devices, eliminating the need for separate versions.
+
+Examples:
+
+* Responsive Design: Twitter, Airbnb, Amazon – these websites adjust to fit various screen sizes.
+* Non-Responsive Design: Older websites or legacy systems like early versions of Craigslist (which do not resize dynamically for smaller screens).
+
+## Differences Between Margin, Border, and Padding
+
+* Margin: The space outside the element's border. It creates space between the element and other elements.
+    * Example: ```margin: 20px```;
+
+* Border: The visible line surrounding the element's padding and content. It can have properties like thickness, style, and color.
+    * Example: ```border: 2px solid black```;
+
+* Padding: The space between the element’s content and its border. It creates space inside the element.
+    * Example: ```padding: 15px```;
+
+Together, margin, border, and padding make up the "box model" of an element.
+
+## Flexbox and Grid Layout Concepts
+
+* Flexbox: Designed for one-dimensional layouts (either row or column). It aligns elements along a main axis and provides flexibility for spacing and alignment.
+
+    * Example usage: Aligning navigation items horizontally with display: flex;.
+    * Properties: flex-direction, justify-content, align-items.
+    * Use case: Responsive navigation bars, single rows/columns of content.
+
+* Grid Layout: Designed for two-dimensional layouts, allowing you to align items in both rows and columns simultaneously.
+
+    * Example usage: Creating a complex webpage layout with headers, sidebars, and content areas using display: grid;.
+    * Properties: grid-template-columns, grid-template-rows, gap.
+    * Use case: Complex page structures like dashboards, multi-column content.
 
 
