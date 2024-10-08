@@ -1400,5 +1400,263 @@ Together, margin, border, and padding make up the "box model" of an element.
     * Example usage: Creating a complex webpage layout with headers, sidebars, and content areas using display: grid;.
     * Properties: grid-template-columns, grid-template-rows, gap.
     * Use case: Complex page structures like dashboards, multi-column content.
+ 
 
+# ASSIGNMENT 6
 
+## 1. Step-by-Step Implementation:
+
+### Modify the codes in data cards to able to use AJAX GET.
+
+in the ```views.py``` create this new function ``` add_product_entry_ajax```
+
+```
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    try:
+        name = strip_tags(request.POST.get("name", "").strip())
+        price = request.POST.get("price", "").strip()
+        description = strip_tags(request.POST.get("description", "").strip())
+        rating = request.POST.get("rating", "").strip()
+        user = request.user
+
+        # Validate name (non-empty)
+        if not name:
+            raise ValidationError('Product name is required.')
+
+        # Validate description (non-empty, and limit length)
+        if not description:
+            raise ValidationError('Product description is required.')
+        if len(description) > 500:
+            raise ValidationError('Description must be 500 characters or fewer.')
+
+        # Validate price (positive decimal)
+        try:
+            price = Decimal(price)
+            MinValueValidator(Decimal('0.01'))(price)  # price must be greater than 0
+        except (ValidationError, Decimal.InvalidOperation):
+            raise ValidationError('Invalid price. Price must be a positive number.')
+
+        # Validate rating (integer between 1 and 5)
+        try:
+            rating = int(rating)
+            if not (1 <= rating <= 5):
+                raise ValidationError('Rating must be between 1 and 5.')
+        except ValueError:
+            raise ValidationError('Invalid rating. It must be an integer between 1 and 5.')
+
+        # Create and save the new product
+        new_product = Product(
+            user=user,
+            name=name,
+            price=price,
+            description=description,
+            rating=rating
+        )
+        new_product.save()
+
+        return JsonResponse({'message': 'Product created successfully.'}, status=201)
+
+    except ValidationError as e:
+        # Return the specific validation error message
+        return JsonResponse({'error': str(e)}, status=400)
+
+    except Exception as e:
+        # Return a generic error message for any other exceptions
+        return JsonResponse({'error': 'An unexpected error occurred: ' + str(e)}, status=500)
+```
+
+### Make the AJAX GET so that it only retrived data belonging to the logged in user
+
+in the ```views.py```  update these two functions
+
+```
+def show_json(request):
+    data = Product.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_xml(request):
+    data = Product.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+```
+
+### Create a button that opens a modal with a form for adding a mood entry
+
+in the ```main.html``` add this new code lines
+```
+    <div class="flex justify-end mb-6">
+      <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-blue-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105" onclick="showModal();">
+        Add New Product
+    </button>
+    </div>
+```
+
+###  Create a new view function to add a new mood entry to the database.
+
+in the ```<script>``` block in the ```main.html``` file, add these functions
+```
+async function getProductEntries() {
+  try {
+    const response = await fetch("{% url 'main:show_json' %}");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching product entries:', error);
+    throw error; // Re-throw to handle it in the refresh function
+  }
+}
+
+async function refreshProductEntries() {
+  try {
+    document.getElementById("product_entry_cards").innerHTML = "";
+    document.getElementById("product_entry_cards").className = "";
+    
+    const productEntries = await getProductEntries();
+    let htmlString = "";
+    let classNameString = "";
+
+    if (productEntries.length === 0) {
+      classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+      htmlString = `
+        <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+          <img src="{% static 'image/no-products.png' %}" alt="No products" class="w-32 h-32 mb-4"/>
+          <p class="text-center text-gray-600 mt-4">No products have been added yet.</p>
+        </div>
+      `;
+    } else {
+      classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full";
+      productEntries.forEach((item) => {
+        const product = DOMPurify.sanitize(item.fields.name);
+        const description = DOMPurify.sanitize(item.fields.description);
+        htmlString += `
+          <div class="relative break-inside-avoid">
+            <div class="absolute top-2 z-10 left-1/2 -translate-x-1/2 flex items-center -space-x-2">
+              <div class="w-[3rem] h-8 bg-gray-200 rounded-md opacity-80 -rotate-90"></div>
+              <div class="w-[3rem] h-8 bg-gray-200 rounded-md opacity-80 -rotate-90"></div>
+            </div>
+            <div class="relative top-5 bg-indigo-100 shadow-md rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-indigo-300 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+              <div class="bg-indigo-200 text-gray-800 p-4 rounded-t-lg border-b-2 border-indigo-300">
+                <h3 class="font-bold text-xl mb-2">${product}</h3>
+                <p class="text-gray-600">Price: $${item.fields.price}</p>
+              </div>
+              <div class="p-4">
+                <p class="font-semibold text-lg mb-2">Description</p>
+                <p class="text-gray-700 mb-2">
+                  <span class="bg-[linear-gradient(to_bottom,transparent_0%,transparent_calc(100%_-_1px),#CDC1FF_calc(100%_-_1px))] bg-[length:100%_1.5rem] pb-1">${description}</span>
+                </p>
+                <div class="mt-4">
+                  <p class="text-gray-700 font-semibold mb-2">Rating</p>
+                  <div class="relative pt-1">
+                    <div class="flex mb-2 items-center justify-between">
+                      <div>
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-indigo-600 bg-indigo-200">
+                          ${item.fields.rating}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-indigo-200">
+                      <div style="width: ${item.fields.rating * 10}%;" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute top-0 -right-4 flex space-x-1">
+              <a href="/edit_product/${item.pk}" class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+              </a>
+              <a href="/delete/${item.pk}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById("product_entry_cards").className = classNameString;
+    document.getElementById("product_entry_cards").innerHTML = htmlString;
+
+  } catch (error) {
+    console.error("Error refreshing product entries:", error);
+    document.getElementById("product_entry_cards").className = "flex items-center justify-center min-h-[24rem]";
+    document.getElementById("product_entry_cards").innerHTML = `
+      <div class="text-center">
+        <p class="text-red-600 font-semibold">Failed to load product entries. Please try again later.</p>
+      </div>
+    `;
+  }
+}
+
+refreshProductEntries();
+
+const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+
+  function showModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modal.classList.remove('hidden'); 
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50); 
+  }
+
+  function hideModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150); 
+  }
+  
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+
+  function addProductEntry() {
+  fetch("{% url 'main:add_product_entry_ajax' %}", {
+    method: "POST",
+    body: new FormData(document.querySelector('#productEntryForm')),
+  })
+  .then(response => {
+    if (response.ok) {
+      refreshProductEntries(); // Update to refresh the product entries list
+
+      // Reset the form and close the modal
+      document.getElementById("productEntryForm").reset(); 
+      hideModal(); // Close the modal after successful addition
+    } else {
+      // Handle the error response if needed
+      console.error('Error adding product entry:', response.statusText);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
+  return false; // Prevent the form from submitting the default way
+}
+
+```
+### Routing
+
+open ```urls.py``` and add import the function
+
+```from main.views import show_main, add_product_entry_ajax```
+
+and in the ```urlpatterns``` add this
+
+```
