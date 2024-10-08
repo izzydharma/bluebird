@@ -13,6 +13,5 @@ class Product(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
     date = models.DateField(auto_now_add=True)
-
     def __str__(self):
         return self.name
