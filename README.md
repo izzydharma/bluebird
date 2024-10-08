@@ -1631,25 +1631,15 @@ const modal = document.getElementById('crudModal');
     method: "POST",
     body: new FormData(document.querySelector('#productEntryForm')),
   })
-  .then(response => {
-    if (response.ok) {
-      refreshProductEntries(); // Update to refresh the product entries list
+  .then(response => refreshProductEntries()) // Update to refresh the product entries list
 
-      // Reset the form and close the modal
-      document.getElementById("productEntryForm").reset(); 
-      hideModal(); // Close the modal after successful addition
-    } else {
-      // Handle the error response if needed
-      console.error('Error adding product entry:', response.statusText);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    document.getElementById("productEntryForm").reset(); 
+    document.querySelector("[data-modal-toggle='crudModal']").click();
+    hideModal();
 
-  return false; // Prevent the form from submitting the default way
+  return false; 
 }
-
+  document.getElementById("submitProductEntry").onclick = addProductEntry
 ```
 ### Routing
 
@@ -1660,3 +1650,10 @@ open ```urls.py``` and add import the function
 and in the ```urlpatterns``` add this
 
 ```
+urlpatterns = [
+    ...
+    path('create-mood-entry-ajax', add_product_entry_ajax, name='add_product_entry_ajax'),
+
+]
+```
+
